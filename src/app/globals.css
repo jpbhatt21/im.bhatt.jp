@@ -1,5 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Germania+One&family=Noto+Serif+Gujarati:wght@100..900&family=Tiro+Devanagari+Hindi:ital@0;1&display=swap');
 @import "tailwindcss";
 
+.guj {
+  font-family: "Noto Serif Gujarati", serif;
+  font-optical-sizing: auto;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.hindi {
+  font-family: "Tiro Devanagari Hindi", serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.tiro-devanagari-hindi-regular-italic {
+  font-family: "Tiro Devanagari Hindi", serif;
+  font-weight: 400;
+  font-style: italic;
+}
+.eng {
+  font-family: "Germania One", system-ui;
+  font-weight: 400;
+  font-style: normal;
+}
+.px{
+  animation: p 10s infinite alternate-reverse;
+}
+@keyframes p{
+  0%,45%{
+    transform: rotateZ(0) rotateY(0);
+    margin-left: 2;
+    margin-top:0;
+
+  }
+  55%,100%{
+    transform: rotateZ(180deg) rotateY(180deg);
+    margin-left: 14px;
+    margin-top:2.5;
+  }
+}
+.bx{
+  animation: b 10s infinite alternate-reverse;
+}
+@keyframes b{
+  0%,45%{
+    transform: rotateZ(0) rotateY(0);
+    margin-left: 0;
+    margin-top:0;
+
+  }
+  55%,100%{
+    transform: rotateZ(180deg) rotateY(180deg);
+    margin-left: -24px;
+    margin-top:2.5;
+
+  }
+}
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -8,19 +65,124 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  /* Oxford Blue */
+  --color-oxford-blue-100: #03060d;
+  --color-oxford-blue-200: #050d1a;
+  --color-oxford-blue-300: #081326;
+  --color-oxford-blue-400: #0a1933;
+  --color-oxford-blue-500: #0d2042;
+  --color-oxford-blue-600: #1b4388;
+  --color-oxford-blue-700: #2967d1;
+  --color-oxford-blue-800: #6e99e2;
+  --color-oxford-blue-900: #b7ccf1;
+  /*color- Dark Purple */
+  --color-dark-purple-100: #050509;
+  --color-dark-purple-200: #0b0a12;
+  --color-dark-purple-300: #100f1b;
+  --color-dark-purple-400: #151525;
+  --color-dark-purple-500: #1b1a2e;
+  --color-dark-purple-600: #3c3966;
+  --color-dark-purple-700: #5c599e;
+  --color-dark-purple-800: #918fc0;
+  --color-dark-purple-900: #c8c7df;
+  /*color- Space Cadet */
+  --color-space-cadet-100: #06080d;
+  --color-space-cadet-200: #0d101a;
+  --color-space-cadet-300: #131827;
+  --color-space-cadet-400: #192034;
+  --color-space-cadet-500: #1f2740;
+  --color-space-cadet-600: #3a4a79;
+  --color-space-cadet-700: #586dae;
+  --color-space-cadet-800: #8f9ec9;
+  --color-space-cadet-900: #c7cee4;
+  /*color- Rich Black (Option 1) */
+  --color-rich-black-100: #020205;
+  --color-rich-black-200: #05050a;
+  --color-rich-black-300: #07070e;
+  --color-rich-black-400: #090913;
+  --color-rich-black-500: #0b0b17;
+  --color-rich-black-600: #2a2a58;
+  --color-rich-black-700: #494998;
+  --color-rich-black-800: #7f7fc1;
+  --color-rich-black-900: #bfbfe0;
+  /*color- Rich Black (Option 2) - Renamed to avoid conflict */
+  --color-richer-black-100: #020206;
+  --color-richer-black-200: #04050c;
+  --color-richer-black-300: #060712;
+  --color-richer-black-400: #080a19;
+  --color-richer-black-500: #0a0c1f;
+  --color-richer-black-600: #212866;
+  --color-richer-black-700: #3844ad;
+  --color-richer-black-800: #717bd1;
+  --color-richer-black-900: #b8bde8;
+
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+  :root { 
+  --background: #0a0a0a;
+  --foreground: #ededed;
+  /* Oxford Blue */
+  --oxford-blue-100: #03060d;
+  --oxford-blue-200: #050d1a;
+  --oxford-blue-300: #081326;
+  --oxford-blue-400: #0a1933;
+  --oxford-blue-500: #0d2042;
+  --oxford-blue-600: #1b4388;
+  --oxford-blue-700: #2967d1;
+  --oxford-blue-800: #6e99e2;
+  --oxford-blue-900: #b7ccf1;
 
+  /* Dark Purple */
+  --dark-purple-100: #050509;
+  --dark-purple-200: #0b0a12;
+  --dark-purple-300: #100f1b;
+  --dark-purple-400: #151525;
+  --dark-purple-500: #1b1a2e;
+  --dark-purple-600: #3c3966;
+  --dark-purple-700: #5c599e;
+  --dark-purple-800: #918fc0;
+  --dark-purple-900: #c8c7df;
+
+  /* Space Cadet */
+  --space-cadet-100: #06080d;
+  --space-cadet-200: #0d101a;
+  --space-cadet-300: #131827;
+  --space-cadet-400: #192034;
+  --space-cadet-500: #1f2740;
+  --space-cadet-600: #3a4a79;
+  --space-cadet-700: #586dae;
+  --space-cadet-800: #8f9ec9;
+  --space-cadet-900: #c7cee4;
+
+  /* Rich Black (Option 1) */
+  --rich-black-100: #020205;
+  --rich-black-200: #05050a;
+  --rich-black-300: #07070e;
+  --rich-black-400: #090913;
+  --rich-black-500: #0b0b17;
+  --rich-black-600: #2a2a58;
+  --rich-black-700: #494998;
+  --rich-black-800: #7f7fc1;
+  --rich-black-900: #bfbfe0;
+
+  /* Rich Black (Option 2) - Renamed to avoid conflict */
+  --richer-black-100: #020206;
+  --richer-black-200: #04050c;
+  --richer-black-300: #060712;
+  --richer-black-400: #080a19;
+  --richer-black-500: #0a0c1f;
+  --richer-black-600: #212866;
+  --richer-black-700: #3844ad;
+  --richer-black-800: #717bd1;
+  --richer-black-900: #b8bde8;
+}
+}
+ 
 body {
-  background: var(--background);
+  background: var(--rich-black-500);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
