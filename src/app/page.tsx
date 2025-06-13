@@ -84,11 +84,11 @@ export default function Home() {
 		};
 	}, [text.length]);
 	return (
-		<div className="flex flex-col items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+		<div className="flex flex-col items-center min-h-screen w-full p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
 			<motion.div className="w-82 h-82 rounded-md z- 10 bg-dark-purple-700 fixed" ref={ref} style={{ x, y, width: w, height: h, borderRadius: r }}></motion.div>
 
 			<div className="fixed z-0 w-full h-full top-0 left-0 bg-rich-black-500/50 backdrop-blur-2xl"></div>
-			<main className="flex w-4xl z-10 flex-col gap-[32px] text-3xl row-start-2 items-center">
+			<main className="flex sm:w-full lg:w-4xl z-10 flex-col gap-[32px] text-3xl row-start-2 items-center">
 				<div className="h-10 mt-20 mb-10 flex w-full items-center eng justify-center">
 					Hi, I'm{" "}
 					<div className=" h-10 flex  text-oxford-blue-900 flex-col gap-8 items-center justify-center p-2 ">
