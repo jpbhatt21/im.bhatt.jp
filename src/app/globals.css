@@ -73,7 +73,7 @@ background: linear-gradient(
 );
 }
 .tint {
-    background-color: #b7ccf1;
+    background-color: #162949;
     -webkit-mask: url('/vine.png') no-repeat center;
     mask: url('/vine.png') no-repeat center;
     -webkit-mask-size: contain;
@@ -82,6 +82,8 @@ background: linear-gradient(
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-ado:#162949;
+  --color-ado-light:#315d99;
   /* Oxford Blue */
   --color-oxford-blue-100: #03060d;
   --color-oxford-blue-200: #050d1a;

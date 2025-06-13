@@ -1,6 +1,9 @@
 "use client";
 import { useEffect, useRef } from "react";
-
+import { Germania_One } from "next/font/google";
+const germ = Germania_One({
+	weight: "400",subsets: ["latin"],
+});
 let prev = 0;
 let cur = 0;
 function Header() {
@@ -29,7 +32,7 @@ function Header() {
 				j<span className=" p">p</span>
 				<span className=" b">b</span>
 			</label>
-			<label className="eng text-2xl">jpb</label>
+			<label className={"eng text-ado-light text-2xl "+germ.className}>jpb</label>
 		</div>
 	);
 }

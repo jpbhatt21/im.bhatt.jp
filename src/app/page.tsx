@@ -1,5 +1,21 @@
 'use client';
 import { frame, motion, useSpring } from "motion/react";
+import { Germania_One,Noto_Serif_Gujarati,Tiro_Devanagari_Hindi } from "next/font/google";
+const germ = Germania_One({
+	weight: "400",subsets: ["latin"],
+	variable: "--font-eng"
+})
+const guj = Noto_Serif_Gujarati({
+	weight: "400",
+	subsets: ["gujarati"],
+	variable: "--font-guj"
+
+});
+const hindi = Tiro_Devanagari_Hindi({
+	weight: "400",
+	subsets: ["devanagari"],
+	variable: "--font-hindi"
+});
 import { useEffect, useRef, useState } from "react";
 const spring = { damping: 100, stiffness: 500, restDelta: 0.001 };
 let arr: any = [];
@@ -35,7 +51,7 @@ export default function Home() {
 				onMouseLeave={() => {
 					focus.current = null;
 				}}
-				className="border border-space-cadet-600 rounded-md"
+				className="border border-ado rounded-md"
 				style={{
 					width: Math.random() * 200 + 50 + "px",
 					height: Math.random() * 200 + 50 + "px",
@@ -85,31 +101,31 @@ export default function Home() {
 	}, [text.length]);
 	return (
 		<div className="flex flex-col items-center min-h-screen w-full p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-			<motion.div className="w-82 h-82 rounded-md z- 10 bg-dark-purple-700 fixed" ref={ref} style={{ x, y, width: w, height: h, borderRadius: r }}></motion.div>
+			<motion.div className="w-82 h-82 rounded-md z- 10 bg-ado-light fixed" ref={ref} style={{ x, y, width: w, height: h, borderRadius: r }}></motion.div>
 
 			<div className="fixed z-0 w-full h-full top-0 left-0 bg-rich-black-500/50 backdrop-blur-2xl"></div>
 			<main className="flex sm:w-full lg:w-4xl z-10 flex-col gap-[32px] text-3xl row-start-2 items-center">
-				<div className="h-10 mt-20 mb-10 flex w-full items-center eng justify-center">
+				<div className={"h-10 mt-20 mb-10 text-oxford-blue-900 flex w-full items-center  justify-center "+germ.className}>
 					Hi, I'm{" "}
-					<div className=" h-10 flex  text-oxford-blue-900 flex-col gap-8 items-center justify-center p-2 ">
-						<label className="guj h-10 flex duration-300 items-center justify-center" style={{ marginTop: [8.75, 0, -8.25][index] + "rem", opacity: [1, 0, 0][index], scale: [1, 0.5, 0.5][index] }}>
+					<div className=" h-10 flex  text-ado-light flex-col gap-8 items-center justify-center p-2 ">
+						<label className={"h-10 flex duration-300 items-center justify-center "+guj.className} style={{ marginTop: [8.75, 0, -8.25][index] + "rem", opacity: [1, 0, 0][index], scale: [1, 0.5, 0.5][index] }}>
 							જતન
 						</label>
-						<label className="eng h-10 flex items-center justify-center duration-300" style={{ opacity: [0, 1, 0][index], scale: [0.5, 1, 0.5][index] }}>
-							jatan
+						<label className=" h-10 flex items-center justify-center duration-300" style={{ opacity: [0, 1, 0][index], scale: [0.5, 1, 0.5][index] }}>
+							Jatan
 						</label>
-						<label className="hindi h-10 flex items-center justify-center duration-300" style={{ opacity: [0, 0, 1][index], scale: [0.5, 0.5, 1][index] }}>
+						<label className={"h-10 flex items-center justify-center duration-300 "+hindi.className} style={{ opacity: [0, 0, 1][index], scale: [0.5, 0.5, 1][index] }}>
 							जतन
 						</label>
 					</div>
-					<div className=" h-10 flex  text-oxford-blue-900 flex-col gap-8 justify-center py-2 ">
-						<label className="guj h-10 flex duration-300 items-center " style={{ marginTop: [8.75, 0, -8.25][index2] + "rem", opacity: [1, 0, 0][index2], scale: [1, 0.5, 0.5][index2] }}>
+					<div className=" h-10 flex  text-ado-light flex-col gap-8 justify-center py-2 ">
+						<label className={"h-10 flex duration-300 items-center  "+guj.className} style={{ marginTop: [8.75, 0, -8.25][index2] + "rem", opacity: [1, 0, 0][index2], scale: [1, 0.5, 0.5][index2] }}>
 							ભટ્ટ
 						</label>
-						<label className="eng h-10 flex items-center duration-300" style={{ opacity: [0, 1, 0][index2], scale: [0.5, 1, 0.5][index2] }}>
-							bhatt
+						<label className="h-10 flex items-center duration-300" style={{ opacity: [0, 1, 0][index2], scale: [0.5, 1, 0.5][index2] }}>
+							Bhatt
 						</label>
-						<label className="hindi h-10 flex items-center duration-300" style={{ opacity: [0, 0, 1][index2], scale: [0.5, 0.5, 1][index2] }}>
+						<label className={"h-10 flex items-center duration-300 " +hindi.className}style={{ opacity: [0, 0, 1][index2], scale: [0.5, 0.5, 1][index2] }}>
 							भट्ट
 						</label>
 					</div>
