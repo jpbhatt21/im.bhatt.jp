@@ -61,7 +61,24 @@
   --background: #ffffff;
   --foreground: #171717;
 }
+.bubble{
 
+background: linear-gradient(
+  135deg,
+  #03060d 0%,
+  #1b1a2e 30%,
+  #3c3966 60%,
+  #5c599e 80%,
+  #8f9ec9 100%
+);
+}
+.tint {
+    background-color: #b7ccf1;
+    -webkit-mask: url('/vine.png') no-repeat center;
+    mask: url('/vine.png') no-repeat center;
+    -webkit-mask-size: contain;
+    mask-size: contain;
+}
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
