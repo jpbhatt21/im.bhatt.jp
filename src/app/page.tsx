@@ -1,50 +1,11 @@
-"use client";
+'use client';
 import { frame, motion, useSpring } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 const spring = { damping: 100, stiffness: 500, restDelta: 0.001 };
-
-export function useFollowPointer(ref: any, focus: any) {
-	const x = useSpring(0, spring);
-	const y = useSpring(0, spring);
-	const w = useSpring(320, spring);
-	const h = useSpring(320, spring);
-	const r = useSpring(500, spring);
-	useEffect(() => {
-		if (!ref.current) return;
-
-		const handlePointerMove = ({ clientX, clientY }: MouseEvent) => {
-			if (!ref.current) return;
-			const element = ref.current!;
-
-			frame.read(() => {
-				if (focus.current) {
-					let focusElement = focus.current;
-					let rect = focusElement.getBoundingClientRect();
-					w.set(focusElement.offsetWidth);
-					h.set(focusElement.offsetHeight);
-					x.set(rect.left - element.offsetLeft);
-					y.set(rect.top - element.offsetTop);
-					r.set(6);
-				} else {
-					x.set(clientX - element.offsetLeft - element.offsetWidth / 2);
-					y.set(clientY - element.offsetTop - element.offsetHeight / 2);
-					w.set(320);
-					h.set(320);
-					r.set(500);
-				}
-			});
-		};
-
-		window.addEventListener("pointermove", handlePointerMove);
-
-		return () => window.removeEventListener("pointermove", handlePointerMove);
-	}, []);
-
-	return { x, y, w, h, r };
-}
 let arr: any = [];
 export default function Home() {
 	const pad = 0;
+	const [vines, setVines] = useState(20);
 	const [index, setIndex] = useState(0);
 	const [index2, setIndex2] = useState(0);
 	const ref = useRef<HTMLDivElement>(null);
@@ -64,6 +25,7 @@ export default function Home() {
 	};
 
 	useEffect(() => {
+		setVines(window.innerHeight / 60)
 		arr = new Array(20).fill(0).map((_, i) => (
 			<div
 				key={i}
@@ -169,7 +131,7 @@ export default function Home() {
 			</main>
 
 			<motion.div className="fixed  right-0 top-0 w-9 rounded-b-full  overflow-hidden" style={{ height: coverHeight }}>
-				{new Array(Math.round(window.innerHeight / 60)).fill(0).map((_, i) => (
+				{new Array(Math.round(vines)).fill(0).map((_, i) => (
 					<div className="w-8 h-31 tint"></div>
 				))}
 			</motion.div>
