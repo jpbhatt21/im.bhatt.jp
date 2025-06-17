@@ -27,7 +27,7 @@ function Header() {
 		});
 	}, []);
 	return (
-		<div ref={ref} className="fixed lg:left-1/2 duration-500 z-20 lg:w-xl lg:-translate-x-1/2  w-[calc(100%-16px)] mx-2 bg-dark-purple-500/25 backdrop-blur px-4 top-2 rounded-md text-oxford-blue-900 border-dark-purple-500 border h-16  flex flex-row items-center">
+		<div ref={ref} className="fixed lg:left-1/2 duration-500 z-20 lg:w-xl lg:-translate-x-1/2  w-[calc(100%-16px)] mx-2 bg-ado/25 backdrop-blur px-4 top-2 rounded-md text-oxford-blue-900 border-dark-purple-500 border h-16  flex flex-row items-center">
 			<label className="eng text-2xl flex hidden">
 				j<span className=" p">p</span>
 				<span className=" b">b</span>

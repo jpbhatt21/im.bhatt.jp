@@ -29,8 +29,12 @@ export default function Home() {
 	const scroller = useRef<HTMLDivElement>(null);
 	const x = useSpring(0, spring);
 	const y = useSpring(0, spring);
-	const w = useSpring(256, spring);
-	const h = useSpring(256, spring);
+	const w = useSpring(
+		0//256
+		, spring);
+	const h = useSpring(
+		0//256
+		, spring);
 	const r = useSpring(500, spring);
 	let [clientX, clientY] = [0, 0];
 	const coverHeight = useSpring(0, spring);
@@ -80,10 +84,10 @@ export default function Home() {
 				} else {
 					x.set(clientX - element.offsetLeft - element.offsetWidth / 2);
 					y.set(clientY - element.offsetTop - element.offsetHeight / 2);
-					// w.set(256);
-					// h.set(256);
-					if (w.get() > h.get()) w.set(h.get());
-					else h.set(w.get());
+					w.set(0);
+					h.set(0);
+					// if (w.get() > h.get()) w.set(h.get());
+					// else h.set(w.get());
 					r.set(500);
 				}
 			});
