@@ -1,26 +1,27 @@
-'use client';
-import { frame, motion, useSpring } from "motion/react";
-import { Germania_One,Noto_Serif_Gujarati,Tiro_Devanagari_Hindi } from "next/font/google";
+"use client";
+import { frame, motion, useMotionTemplate, useSpring } from "motion/react";
+import { Germania_One, Noto_Serif_Gujarati, Tiro_Devanagari_Hindi } from "next/font/google";
 const germ = Germania_One({
-	weight: "400",subsets: ["latin"],
-	variable: "--font-eng"
-})
+	weight: "400",
+	subsets: ["latin"],
+	variable: "--font-eng",
+});
 const guj = Noto_Serif_Gujarati({
 	weight: "400",
 	subsets: ["gujarati"],
-	variable: "--font-guj"
-
+	variable: "--font-guj",
 });
 const hindi = Tiro_Devanagari_Hindi({
 	weight: "400",
 	subsets: ["devanagari"],
-	variable: "--font-hindi"
+	variable: "--font-hindi",
 });
 import { useEffect, useRef, useState } from "react";
+import VantaFogBackground from "./comp/vanta";
 const spring = { damping: 100, stiffness: 500, restDelta: 0.001 };
 let arr: any = [];
 export default function Home() {
-	const pad = 0;
+	const pad = 20;
 	const [vines, setVines] = useState(20);
 	const [index, setIndex] = useState(0);
 	const [index2, setIndex2] = useState(0);
@@ -30,14 +31,17 @@ export default function Home() {
 	const x = useSpring(0, spring);
 	const y = useSpring(0, spring);
 	const w = useSpring(
-		0//256
-		, spring);
+		0, //256
+		spring
+	);
 	const h = useSpring(
-		0//256
-		, spring);
+		0, //256
+		spring
+	);
 	const r = useSpring(500, spring);
 	let [clientX, clientY] = [0, 0];
 	const coverHeight = useSpring(0, spring);
+	const mask = useMotionTemplate`linear-gradient(to bottom,   var(--color-rich-black-500) calc(${coverHeight}px - 20px), #0000 calc(${coverHeight}px) )`
 	const text = ["bhatt.jp", "ભટ્ટ.જપ", "भट्ट.जप"];
 	const handlePointerMove = (e: any) => {
 		clientX = e.clientX;
@@ -45,7 +49,7 @@ export default function Home() {
 	};
 
 	useEffect(() => {
-		setVines(window.innerHeight / 60)
+		setVines(window.innerHeight / 60);
 		arr = new Array(20).fill(0).map((_, i) => (
 			<div
 				key={i}
@@ -55,7 +59,7 @@ export default function Home() {
 				onMouseLeave={() => {
 					focus.current = null;
 				}}
-				className="border border-ado rounded-md"
+				className="border border-ado-blue-600 rounded-md"
 				style={{
 					width: Math.random() * 200 + 50 + "px",
 					height: Math.random() * 200 + 50 + "px",
@@ -63,11 +67,12 @@ export default function Home() {
 		));
 		let counter = 0;
 		const interval = setInterval(() => {
-			if (counter++ % 30 == 0) {setIndex( Math.floor(Math.random() * text.length));
+			if (counter++ % 30 == 0) {
+				setIndex(Math.floor(Math.random() * text.length));
 
 				setIndex2(Math.floor(Math.random() * text.length));
 			}
-				// (prevIndex) => (prevIndex + 1) % text.length);
+			// (prevIndex) => (prevIndex + 1) % text.length);
 
 			if (!ref.current) return;
 			const element = ref.current!;
@@ -96,7 +101,7 @@ export default function Home() {
 		window.addEventListener("pointermove", handlePointerMove);
 		window.addEventListener("scroll", (e) => {
 			if (!scroller.current) return;
-			coverHeight.set((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * window.innerHeight);
+			coverHeight.set((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight))* window.innerHeight);
 		});
 		return () => {
 			window.removeEventListener("pointermove", handlePointerMove);
@@ -105,58 +110,65 @@ export default function Home() {
 	}, [text.length]);
 	return (
 		<div className="flex flex-col items-center min-h-screen w-full p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-			<motion.div className="w-82 h-82 rounded-md z- 10 bg-ado-light fixed" ref={ref} style={{ x, y, width: w, height: h, borderRadius: r }}></motion.div>
+			<VantaFogBackground>a
+				</VantaFogBackground>
+				<motion.div className="w-82 h-82 rounded-md z- 10 bg-ado-blue-800 fixed" ref={ref} style={{ x, y, width: w, height: h, borderRadius: r }}></motion.div>
 
-			<div className="fixed z-0 w-full h-full top-0 left-0 bg-rich-black-500/50 backdrop-blur-2xl"></div>
-			<main className="flex sm:w-full lg:w-4xl z-10 flex-col gap-[32px] text-3xl row-start-2 items-center">
-				<div className={"h-10 mt-20 mb-10 text-oxford-blue-900 flex w-full items-center  justify-center "+germ.className}>
-					Hi, I'm{" "}
-					<div className=" h-10 flex  text-ado-light flex-col gap-8 items-center justify-center p-2 ">
-						<label className={"h-10 flex duration-300 items-center justify-center "+guj.className} style={{ marginTop: [8.75, 0, -8.25][index] + "rem", opacity: [1, 0, 0][index], scale: [1, 0.5, 0.5][index] }}>
-							જતન
-						</label>
-						<label className=" h-10 flex items-center justify-center duration-300" style={{ opacity: [0, 1, 0][index], scale: [0.5, 1, 0.5][index] }}>
-							Jatan
-						</label>
-						<label className={"h-10 flex items-center justify-center duration-300 "+hindi.className} style={{ opacity: [0, 0, 1][index], scale: [0.5, 0.5, 1][index] }}>
-							जतन
-						</label>
+				<div className="fixed z-0 w-full h-full top-0 left-0 bg-rich-black-500/50 backdrop-blur-2xl"></div>
+				<main className="flex sm:w-full lg:w-4xl z-10 flex-col gap-[32px] text-3xl row-start-2 items-center">
+					<div className={"h-10 mt-20 mb-10 text-ado-blue-800 flex w-full items-center  justify-center " + germ.className}>
+						Hi, I'm{" "}
+						<div className=" h-10 flex  text-ado-blue-600 flex-col gap-8 items-center justify-center p-2 ">
+							<label className={"h-10 flex duration-300 items-center justify-center " + guj.className} style={{ marginTop: [8.75, 0, -8.25][index] + "rem", opacity: [1, 0, 0][index], scale: [1, 0.5, 0.5][index] }}>
+								જતન
+							</label>
+							<label className=" h-10 flex items-center justify-center duration-300" style={{ opacity: [0, 1, 0][index], scale: [0.5, 1, 0.5][index] }}>
+								Jatan
+							</label>
+							<label className={"h-10 flex items-center justify-center duration-300 " + hindi.className} style={{ opacity: [0, 0, 1][index], scale: [0.5, 0.5, 1][index] }}>
+								जतन
+							</label>
+						</div>
+						<div className=" h-10 flex  text-ado-blue-600 flex-col gap-8 justify-center py-2 ">
+							<label className={"h-10 flex duration-300 items-center  " + guj.className} style={{ marginTop: [8.75, 0, -8.25][index2] + "rem", opacity: [1, 0, 0][index2], scale: [1, 0.5, 0.5][index2] }}>
+								ભટ્ટ
+							</label>
+							<label className="h-10 flex items-center duration-300" style={{ opacity: [0, 1, 0][index2], scale: [0.5, 1, 0.5][index2] }}>
+								Bhatt
+							</label>
+							<label className={"h-10 flex items-center duration-300 " + hindi.className} style={{ opacity: [0, 0, 1][index2], scale: [0.5, 0.5, 1][index2] }}>
+								भट्ट
+							</label>
+						</div>
+						<div className=" h-10 flex hidden  text-oxford-blue-900 flex-col gap-8 items-center justify-center p-2 ">
+							<label className="guj h-10 flex duration-300 items-center justify-center" style={{ marginTop: [8.75, 0, -8.75][index] + "rem", opacity: [1, 0, 0][index], scale: [1, 0.5, 0.5][index] }}>
+								ભટ્ટ.જપ
+							</label>
+							<label className="eng h-10 flex items-center justify-center duration-300" style={{ opacity: [0, 1, 0][index], scale: [0.5, 1, 0.5][index] }}>
+								bhatt.jp
+							</label>
+							<label className="hindi h-10 flex items-center justify-center duration-300" style={{ opacity: [0, 0, 1][index], scale: [0.5, 0.5, 1][index] }}>
+								भट्ट.जप
+							</label>
+						</div>
 					</div>
-					<div className=" h-10 flex  text-ado-light flex-col gap-8 justify-center py-2 ">
-						<label className={"h-10 flex duration-300 items-center  "+guj.className} style={{ marginTop: [8.75, 0, -8.25][index2] + "rem", opacity: [1, 0, 0][index2], scale: [1, 0.5, 0.5][index2] }}>
-							ભટ્ટ
-						</label>
-						<label className="h-10 flex items-center duration-300" style={{ opacity: [0, 1, 0][index2], scale: [0.5, 1, 0.5][index2] }}>
-							Bhatt
-						</label>
-						<label className={"h-10 flex items-center duration-300 " +hindi.className}style={{ opacity: [0, 0, 1][index2], scale: [0.5, 0.5, 1][index2] }}>
-							भट्ट
-						</label>
+					<div ref={scroller} className="w-full flex hid den flex-wrap justify-center items-center gap-8 ">
+						{arr}
 					</div>
-					<div className=" h-10 flex hidden  text-oxford-blue-900 flex-col gap-8 items-center justify-center p-2 ">
-						<label className="guj h-10 flex duration-300 items-center justify-center" style={{ marginTop: [8.75, 0, -8.75][index] + "rem", opacity: [1, 0, 0][index], scale: [1, 0.5, 0.5][index] }}>
-							ભટ્ટ.જપ
-						</label>
-						<label className="eng h-10 flex items-center justify-center duration-300" style={{ opacity: [0, 1, 0][index], scale: [0.5, 1, 0.5][index] }}>
-							bhatt.jp
-						</label>
-						<label className="hindi h-10 flex items-center justify-center duration-300" style={{ opacity: [0, 0, 1][index], scale: [0.5, 0.5, 1][index] }}>
-							भट्ट.जप
-						</label>
-					</div>
-				</div>
-				<div ref={scroller} className="w-full flex hid den flex-wrap justify-center items-center gap-8 ">
-					{arr}
-				</div>
-			</main>
+				</main>
 
-			<motion.div className="fixed  right-0 top-0 w-9 rounded-b-full  overflow-hidden" style={{ height: coverHeight }}>
-				{new Array(Math.round(vines)).fill(0).map((_, i) => (
-					<div className="w-8 h-31 tint"></div>
-				))}
-			</motion.div>
+				<motion.div className="fixed right-0 top-0 w-9 rounded-b-full h-full cover overflow-hidden"
+				style={{mask:mask,
 
-			<footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">Hello</footer>
+				}}
+				>
+					{new Array(Math.round(vines)).fill(0).map((_, i) => (
+						<div className="w-8 h-31 tint"></div>
+					))}
+				</motion.div>
+				
+				<footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">Hello</footer>
+			
 		</div>
 	);
 }

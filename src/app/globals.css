@@ -73,17 +73,35 @@ background: linear-gradient(
 );
 }
 .tint {
-    background-color: #162949;
+    background-color: var(--color-ado-blue-800);
+    color: #162949;
     -webkit-mask: url('/vine.png') no-repeat center;
     mask: url('/vine.png') no-repeat center;
     -webkit-mask-size: contain;
     mask-size: contain;
+    
+}
+.cover{
+  
+   mask-image: linear-gradient(to bottom,   #0000  0%, var(--color-rich-black-500) 5% );
+   
 }
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-ado:#162949;
   --color-ado-light:#315d99;
+  /* Ado Blue */
+  --color-ado-blue-100: #162949;
+  --color-ado-blue-200: #1d365d;
+  --color-ado-blue-300: #244371;
+  --color-ado-blue-400: #2a5085;
+  --color-ado-blue-500: #315d99;
+  --color-ado-blue-600: #5c90d8;
+  --color-ado-blue-700: #7aa9e7;
+  --color-ado-blue-800: #97c0f8;
+  --color-ado-blue-900: #b3d8ff;
+
   /* Oxford Blue */
   --color-oxford-blue-100: #03060d;
   --color-oxford-blue-200: #050d1a;
