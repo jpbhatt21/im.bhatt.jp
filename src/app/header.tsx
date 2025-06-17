@@ -31,7 +31,7 @@ function Header() {
 		});
 	}, []);
 	return (
-		<div ref={ref} className="fixed lg:left-1/2 duration-500 z-20 lg:w-xl lg:-translate-x-1/2  w-[calc(100%-16px)] top-0  bg- ado/25 backdrop-blur gap-2 text-oxford-blue-900 border-dark-purple-500 bo rder h-16 items-center flex flex-col">
+		<div ref={ref} className="fixed lg:left-1/2 duration-500 z-20 lg:w-xl lg:-translate-x-1/2  w-full top-0  bg- ado/25 backdrop-blur gap-2 text-oxford-blue-900 border-dark-purple-500 bo rder h-16 items-center flex flex-col">
 			<div className="w-full h-full px-4 flex items-center ">
 				<label className="eng text-2xl flex hidden">
 				j<span className=" p">p</span>

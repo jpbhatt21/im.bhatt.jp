@@ -22,7 +22,7 @@ const spring = { damping: 100, stiffness: 500, restDelta: 0.001 };
 let arr: any = [];
 export default function Home() {
 	const pad = 20;
-	const [vines, setVines] = useState(20);
+	const [vines, setVines] = useState({x:40,y:20});
 	const [index, setIndex] = useState(0);
 	const [index2, setIndex2] = useState(0);
 	const ref = useRef<HTMLDivElement>(null);
@@ -41,7 +41,7 @@ export default function Home() {
 	const r = useSpring(500, spring);
 	let [clientX, clientY] = [0, 0];
 	const coverHeight = useSpring(0, spring);
-	const mask = useMotionTemplate`linear-gradient(to bottom,   var(--color-rich-black-500) calc(${coverHeight}px - 20px), #0000 calc(${coverHeight}px) )`
+	const mask = useMotionTemplate`linear-gradient(to bottom,   var(--color-rich-black-500) calc(${coverHeight}% - 20px), #0000 calc(${coverHeight}%) )`
 	const text = ["bhatt.jp", "ભટ્ટ.જપ", "भट्ट.जप"];
 	const handlePointerMove = (e: any) => {
 		clientX = e.clientX;
@@ -49,7 +49,10 @@ export default function Home() {
 	};
 
 	useEffect(() => {
-		setVines(window.innerHeight / 60);
+		setVines({
+			x:window.innerWidth / 60,
+			y:window.innerHeight / 60
+		});
 		arr = new Array(20).fill(0).map((_, i) => (
 			<div
 				key={i}
@@ -101,7 +104,7 @@ export default function Home() {
 		window.addEventListener("pointermove", handlePointerMove);
 		window.addEventListener("scroll", (e) => {
 			if (!scroller.current) return;
-			coverHeight.set((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight))* window.innerHeight);
+			coverHeight.set((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight))*100);
 		});
 		return () => {
 			window.removeEventListener("pointermove", handlePointerMove);
@@ -109,9 +112,12 @@ export default function Home() {
 		};
 	}, [text.length]);
 	return (
-		<div className="flex flex-col items-center min-h-screen w-full p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-			<VantaFogBackground>a
+		<>
+		<VantaFogBackground>a
 				</VantaFogBackground>
+		
+		<div className="flex flex-col items-center min-h-screen w-full p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
+			
 				<motion.div className="w-82 h-82 rounded-md z- 10 bg-ado-blue-800 fixed" ref={ref} style={{ x, y, width: w, height: h, borderRadius: r }}></motion.div>
 
 				<div className="fixed z-0 w-full h-full top-0 left-0 bg-rich-black-500/50 backdrop-blur-2xl"></div>
@@ -157,18 +163,20 @@ export default function Home() {
 					</div>
 				</main>
 
-				<motion.div className="fixed right-0 top-0 w-9 rounded-b-full h-full cover overflow-hidden"
+				<motion.div className="fixed lg:left-[calc(100%-2.25rem)] lg:top-0 lg:rotate-0 lg:h-full -rotate-90 left-0 top-full  origin-top-left h-[100vw] w-9 rounded-b-full cover overflow-hidden"
 				style={{mask:mask,
 
 				}}
 				>
-					{new Array(Math.round(vines)).fill(0).map((_, i) => (
+					{new Array(Math.round(vines.y>vines.x?vines.y:vines.x)).fill(0).map((_, i) => (
 						<div className="w-8 h-31 tint"></div>
 					))}
 				</motion.div>
 				
+				
 				<footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">Hello</footer>
 			
 		</div>
+		</>
 	);
 }
