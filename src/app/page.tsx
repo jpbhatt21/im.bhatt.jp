@@ -20,6 +20,40 @@ import { useEffect, useRef, useState } from "react";
 import VantaFogBackground from "./comp/vanta";
 const spring = { damping: 100, stiffness: 500, restDelta: 0.001 };
 let arr: any = [];
+let items:any=[
+	{
+		name: "Webtris",
+		cover:"https://github.com/jpbhatt21/webtris/blob/main/public/logo.png?raw=true",
+		record:"https://github.com/jpbhatt21/webtris/blob/d2ab3b8277848a0658cb1c5dbda3e6fe5bccf361/public/image.png?raw=true",
+		date: "Dec. 2024",
+	}
+]
+let vinyls=items.map((x:any,i:number)=>(
+	<div className="vinyl-container w-75 max-w-75 h-75 max-h-75">
+		<div className="vinyl-record spinning flex items-center justify-center">
+			<img className="w-24 aspect-square rounded-full" src={x.record}></img>
+		</div>
+		<motion.div initial={{
+			marginLeft: "-100%",
+			rotate:"0deg",
+			marginTop: "0%",
+		}} 
+		animate={{
+			marginLeft:"-160%",
+			rotate:"-10deg",
+			marginTop: "7.5%",	
+		}}
+		exit={{
+			marginLeft: "-100%",
+			rotate:"0deg",
+			marginTop: "0%",
+		}}
+		className="vinyl-cover p-12 flex max-w-78.75 max-h-78.75 shadow-xl  flex-col items-center justify-center">
+			<div className="w-full h-full flex items-center justify-center"><img className="w-full  opacity-90" src={x.cover}></img></div>
+			<label className="eng text-oxford-blue-900">{x.date}</label>
+		</motion.div>
+	</div>
+))
 export default function Home() {
 	const pad = 20;
 	const [index, setIndex] = useState(0);
@@ -40,7 +74,7 @@ export default function Home() {
 	const r = useSpring(500, spring);
 	let [clientX, clientY] = [0, 0];
 	const coverHeight = useSpring(0, spring);
-	const mask = useMotionTemplate`linear-gradient(to bottom,   var(--color-rich-black-500) calc(${coverHeight}% - 20px), #0000 calc(${coverHeight}%) )`;
+	const mask = useMotionTemplate`linear-gradient(to bottom,   #fff calc(${coverHeight}% - 40px), #0000 calc(${coverHeight}%) )`;
 	const text = ["bhatt.jp", "ભટ્ટ.જપ", "भट्ट.जप"];
 	const handlePointerMove = (e: any) => {
 		clientX = e.clientX;
@@ -109,7 +143,6 @@ export default function Home() {
 	return (
 		<>
 			<VantaFogBackground>a</VantaFogBackground>
-
 			<div className="flex flex-col items-center min-h-screen w-full p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
 				<motion.div className="w-82 h-82 rounded-md z- 10 bg-ado-blue-800 fixed" ref={ref} style={{ x, y, width: w, height: h, borderRadius: r }}></motion.div>
 
@@ -151,14 +184,17 @@ export default function Home() {
 							</label>
 						</div>
 					</div>
-					<div ref={scroller} className="w-full flex hid den flex-wrap justify-center items-center gap-8 ">
+					<div ref={scroller} className="w-full hidden flex hid den flex-wrap justify-center items-center gap-8 ">
 						{arr}
+					</div>
+					<div className="h-100 w-300 gap-12.5 flex items-center justify-center">
+{vinyls}
 					</div>
 				</main>
 
 				<div className="h-screen w-full pointer-events-none rotate-180 -mt-16 lg:mt-0 lg:rotate-0 rotate-y-180 lg:rotate-y-0 lg:top-0 left-0 fixed flex flex-col lg:flex-row lg:justify-end z-10">
 					<motion.div className="cover -rotate-90 lg:rotate-0 origin-top-left overflow-hidden h-[100vw] lg:h-screen w-8" style={{ mask: mask }}>
-						<div className="w-full h-full tint"/>
+						<div className="w-full h-full vines tint"/>
 					</motion.div>
 				</div>
 
