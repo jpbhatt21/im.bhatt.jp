@@ -32,7 +32,7 @@ const VantaFogBackground = ({ children }) => {
   }, [vantaEffect])
 
   return (
-    <div ref={vantaRef}  className='w-full h-full fixed top-0 left-0 z-0'>
+    <div ref={vantaRef}  className='w-full h-screen fixed top-0 left-0 z-0'>
       {children}
     </div>
   )
