@@ -26,60 +26,61 @@ let items: any = [
 		cover: "https://github.com/jpbhatt21/websu/raw/main/public/websu.png",
 		record: "https://github.com/jpbhatt21/websu/raw/main/public/websu.png",
 		date: "Oct. 2024",
-		bgcolor:"#4f3caa",
-		color:"#d9d9d9",
-		style:{
-			high:0x6a4bf1,
-			mid:0xd9d9d9,
-			base:0x231b1f,
-		}
-	},{
+		bgcolor: "#4f3caa",
+		color: "#d9d9d9",
+		style: {
+			high: 0x6a4bf1,
+			mid: 0xd9d9d9,
+			base: 0x231b1f,
+		},
+	},
+	{
 		name: "Webtris",
 		cover: "https://github.com/jpbhatt21/webtris/blob/main/public/logo.png?raw=true",
 		record: "https://github.com/jpbhatt21/webtris/blob/d2ab3b8277848a0658cb1c5dbda3e6fe5bccf361/public/image.png?raw=true",
 		date: "Dec. 2024",
-		bgcolor:"#1a1b26",
-		color:"#7f98b5",
-		style:{
-			high:0x7eb3bc,
-			mid:0x7f98b5,
-			base:0x1b1b1b,
-		}
+		bgcolor: "#1a1b26",
+		color: "#7f98b5",
+		style: {
+			high: 0x7eb3bc,
+			mid: 0x7f98b5,
+			base: 0x1b1b1b,
+		},
 	},
-	
+
 	{
 		name: "Planetarium & P",
 		cover: "https://github.com/jpbhatt21/planetarium3d/blob/main/public/logo.png?raw=true",
 		record: "https://raw.githubusercontent.com/jpbhatt21/planetarium3d/1b418ddbb1ff4d00e0995c097f993f858292a7c8/public/p1.svg",
 		date: "Feb. 2025",
-		bgcolor:"#0c0c0e",
-		color:"#cececf",
-		style:{
-			high:0xeeddb6,
-			mid:0xcececf,
-			base:0x0c0c0e,
-		}
-		
+		bgcolor: "#0c0c0e",
+		color: "#cececf",
+		style: {
+			high: 0xeeddb6,
+			mid: 0xcececf,
+			base: 0x0c0c0e,
+		},
 	},
 	{
 		name: "WuWa Mod Manager",
 		cover: "https://github.com/jpbhatt21/wuwa-mod-manager/raw/main/preview/logo.png",
 		record: "https://github.com/jpbhatt21/wuwa-mod-manager/blob/main/assets/logo-Bp59aN_C.png?raw=true",
 		date: "May 2025",
-		bgcolor:"#151515",
-		color:"#a5937c",
-		style:{
-			high:0xcdb896,
-			mid:0xa5937c,
-			base:0x151515,
-		}
+		bgcolor: "#151515",
+		color: "#a5937c",
+		style: {
+			high: 0xcdb896,
+			mid: 0xa5937c,
+			base: 0x151515,
+		},
 	},
 ];
-
+let vmin = 0;
 export default function Home() {
 	const pad = 20;
 	const [index, setIndex] = useState(0);
 	const [index2, setIndex2] = useState(0);
+	
 	const ref = useRef<HTMLDivElement>(null);
 	const focus = useRef<HTMLDivElement>(null);
 	const scroller = useRef<HTMLDivElement>(null);
@@ -103,25 +104,26 @@ export default function Home() {
 		clientX = e.clientX;
 		clientY = e.clientY;
 	};
-	const [cur, setCur] = useState(0);
+	const [cur, setCur] = useState(-1);
 
 	let vinyls = items.map((x: any, i: number) => (
 		<div
-			className="vinyl-container group duration-300 delay -100 w-75 max-w-75 h-75 max-h-75"
-			style={{ marginLeft: i == 0 ? "calc(50% - 50px - " +(cur<0?0: 500 * cur )+ "px - " + (cur <=0 ? 0 : 200) + "px)" : i == cur ? "200px" : "", marginTop: i == cur ? "-150px" : "0px",
-			 }}
+			className="vinyl-container group duration-300 delay -100 w-[33vmin] max-w-[33vmin] min-w-[33vmin] h-[33vmin] max-h-[33vmin] min-h-[33vmin] items-center justify-center p-0"
+			style={{marginInline:i==cur?"8vmin":"",
+				marginTop: i==cur?"-16.5vmin":"0",
+			}}
 			onClick={() => {
-				if(!projectRef.current) return;
-				window.scrollTo({ top: projectRef.current.offsetTop + i * 300, behavior: "smooth"});
+				if (!projectRef.current) return;
+				window.scrollTo({ top: projectRef.current.offsetTop + (i + 1) * Math.min(window.innerHeight, window.innerWidth) * 0.33, behavior: "smooth" });
 			}}>
-			<div className={"vinyl-record shadow-xl min-w-75 min-h-75 duration-200 delay-200 flex items-center justify-center " + (i == cur ? "spinning group-hover:scale-150group-hover:mt-[20%] group-hover:-ml-[35%]" : "")}>
-				<img className="w-24 bg-oxford-blue-300 aspect-square rounded-full" src={x.record}></img>
-			</div>
-			<div style={{backgroundColor: x.bgcolor || "#081326",color:x.color||"var(--color-oxford-blue-900)"}} className={"vinyl-cover rounded-sm p-12 flex max-w-78.75 max-h-78.75 shadow-xl back z-20 delay-200 duration-300  flex-col items-center justify-center  -mt-[2.5%] " + (i == cur ? "-ml-[152.5%] group-hover:-ml-[207.5%] group-hover:-ml -[177.5%] group-hover:opacity-0" : "-ml-[102.5%] group-hover:-ml-[152.5%] ")}>
-				<div className="w-full h-full flex items-center justify-center">
+			<div className={"vinyl-cover rounded-sm p-[4vmin] pb-[6vmin] min-h-full min-w-full h-full w-full  flex  aspect-square shadow-xl back z-10 delay-200 duration-300  flex-col items-center " + (i == cur ? "-mr-[50%] group-hover:-mr-[0%] pointer-events-none group-hover:opacity-0" : " -mr-[100%] group-hover:-mr-[50%] ")} style={{ backgroundColor: x.bgcolor || "#081326", color: x.color || "var(--color-oxford-blue-900)", transitionProperty: "margin-right , opacity" }}>
+				<div className="min-w-full min-h-full aspect-square  flex items-center justify-center">
 					<img className="w-full  opacity-90" src={x.cover}></img>
 				</div>
-				<label className="eng">{x.date}</label>
+				<label className="eng min-h-[8vmin]  text-[3.5vmin]">{x.date}</label>
+			</div>
+			<div className={"vinyl-record shadow-xl min-h-full min-w-full h-full w-full  duration-200 delay-200 flex items-center justify-center pointer-events-none " + (i == cur ? "spinning group-hover:scale-125  group-hover:-ml-[105%] " : "")}>
+				<img className="w-[10vmin] bg-oxford-blue-300 aspect-square rounded-full" src={x.record}></img>
 			</div>
 		</div>
 	));
@@ -174,19 +176,24 @@ export default function Home() {
 				}
 			});
 		}, 100);
-
+		vmin = Math.min(window.innerHeight, window.innerWidth) * 0.01;
 		window.addEventListener("pointermove", handlePointerMove);
 		window.addEventListener("scroll", (e) => {
 			if (!scroller.current) return;
 			coverHeight.set((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
-			if(projectRef.current){
+			if (projectRef.current) {
 				let top = projectRef.current.getBoundingClientRect().top;
 				console.log(top);
-				if(top >0)
-					setCur(-1);
-				else 
-				setCur(Math.min(items.length -1,Math.floor(-top/300)))
+				if (top > 0) setCur(-1);
+				else
+					setCur(() => {
+						let index = Math.floor(-top / (vmin * 33));
+						return index >= items.length ? items.length : index;
+					});
 			}
+		});
+		window.addEventListener("resize", () => {
+			vmin = Math.min(window.innerHeight, window.innerWidth) * 0.01;
 		});
 		return () => {
 			window.removeEventListener("pointermove", handlePointerMove);
@@ -195,7 +202,7 @@ export default function Home() {
 	}, [text.length]);
 	return (
 		<>
-			<VantaFogBackground {...(items[cur]?.style||{})}>a</VantaFogBackground>
+			<VantaFogBackground {...(items[cur]?.style || {})}>a</VantaFogBackground>
 			<div className="flex flex-col overflow-x-clip items-center min-h-screen w-full p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
 				<motion.div className="w-82 h-82 rounded-md z- 10 bg-ado-blue-800 fixed" ref={ref} style={{ x, y, width: w, height: h, borderRadius: r }}></motion.div>
 
@@ -240,10 +247,16 @@ export default function Home() {
 					<div ref={scroller} className="w-full hidden flex hid den flex-wrap justify-center items-center gap-8 ">
 						{arr}
 					</div>
-					<div ref={projectRef}className="h-640 w-full  px-0  items-center flex flex-col">
-						<div className="h-120 w-screen sticky top-[24rem] gap-50 overflow-x-clip flex items-center justify-start">{vinyls}</div>
-						
-					</div><div className="h-0 w-full items-center flex flex-col"></div>
+					<div ref={projectRef} className="h-[250vmin] w-full  px-0  items-center flex flex-col">
+						<div className="h-[55vmin] w-full  sticky duration-300 self-start top-1/2 translate-x-1/2  -translate-y-1/2 gap-[11vmin] overflow-x-visible flex items-center justify-start"
+						style={{
+							marginLeft:"calc(-24.375vmin - "+(cur*44)+"vmin)",
+							opacity:cur<0||cur>=items.length?0:1,
+						}}
+						>{vinyls}</div>
+					</div>
+					<div className="fixed w-[1px] h-[1px] bg-red-500 hidden *:top-1/2 left-1/2"></div>
+					<div className="h-0 w-full items-center flex flex-col"></div>
 				</main>
 
 				<div className="h-screen w-full pointer-events-none rotate-180 -mt-16 lg:mt-0 lg:rotate-0 rotate-y-180 lg:rotate-y-0 lg:top-0 left-0 fixed flex flex-col lg:flex-row lg:justify-end z-10">
