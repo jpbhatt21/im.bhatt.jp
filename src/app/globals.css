@@ -8,14 +8,10 @@
 .vinyl-cover{
   min-width: 105%;
   min-height: 105%;
-  border-radius:5px;
-  background: var(--color-oxford-blue-200);
   
 }
 
 .vinyl-record {
-  min-width: 100%;
-  min-height: 100%;
   border-radius: 50%;
   background: repeating-radial-gradient(
     circle,
@@ -71,7 +67,7 @@
 }
 
 .vinyl-record.spinning {
-  animation: spin 3s linear infinite;
+  animation: spin 3s 0.3s linear infinite;
 }
 
 
