@@ -79,6 +79,7 @@ let vmin = 0;
 let onscroll = null as any;
 let curIndex = -1;
 function textx(str: string,delay=0.05,key="") {
+	return str
 	return str.split("").map((x, i) =>
 		x == " " ? (
 			<span key={i} className="inline-block w-[0.5ch]"></span>
@@ -287,7 +288,7 @@ export default function Home() {
 							style={{
 								color: items[cur] ? items[cur].color : "",
 							}}>
-							{!(cur == -2 || cur == items.length + 1) && textx((items[cur] ? items[cur].name : "Projects"),0.05,items[cur] ?cur+"":"")}
+							{!(cur == -2 || cur == items.length + 1) && textx((items[cur] && false ? items[cur].name : "Projects"),0.05,items[cur] ?cur+"":"")}
 						</div>
 						<div
 							className="h-[41vmin] w-full  sticky duration-300 self-start top-[calc(50svh-20.5vmin)] translate-x-1/2  gap-[11vmin] overflow-x-visible flex items-center justify-start"
