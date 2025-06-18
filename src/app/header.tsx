@@ -31,8 +31,8 @@ function Header() {
 		});
 	}, []);
 	return (
-		<div ref={ref} className="fixed lg:left-1/2 duration-500 z-20 lg:w-[40vw] lg:-translate-x-1/2  w-full top-0  bg- ado/25 backdrop-blur gap-2 text-oxford-blue-900 border-dark-purple-500 bo rder h-[8vh] items-center flex flex-col">
-			<div className="w-full h-full px-4 flex items-center ">
+		<div ref={ref} className="fixed lg:left-1/2 duration-500 z-20 lg:w-[40vw] lg:-translate-x-1/2  w-full top-0  bg- ado/25 backdrop-blur-sm gap-2 text-oxford-blue-900 border-dark-purple-500 bo rder h-[8vh] items-center flex flex-col">
+			<div className="w-full h-full px-[2vw] flex items-center ">
 				<label className="eng text-2xl flex hidden">
 					j<span className=" p">p</span>
 					<span className=" b">b</span>

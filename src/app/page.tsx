@@ -49,7 +49,7 @@ let items: any = [
 	},
 
 	{
-		name: "Planetarium & P",
+		name: "Planetarium",
 		cover: "https://github.com/jpbhatt21/planetarium3d/blob/main/public/logo.png?raw=true",
 		record: "https://raw.githubusercontent.com/jpbhatt21/planetarium3d/1b418ddbb1ff4d00e0995c097f993f858292a7c8/public/p1.svg",
 		date: "Feb. 2025",
@@ -78,6 +78,17 @@ let items: any = [
 let vmin = 0;
 let onscroll = null as any;
 let curIndex = -1;
+function textx(str: string,delay=0.05,key="") {
+	return str.split("").map((x, i) =>
+		x == " " ? (
+			<span key={i} className="inline-block w-[0.5ch]"></span>
+		) : (
+			<motion.span initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} exit={{opacity:0,y:20}} transition={{ delay: i * delay }} key={i+""+x+""+key} className="inline-block">
+				{x}
+			</motion.span>
+		)
+	);
+}
 export default function Home() {
 	const pad = 50;
 	const [index, setIndex] = useState(0);
@@ -123,7 +134,7 @@ export default function Home() {
 			style={{ marginInline: i == cur ? "8vmin" : "", marginTop: i == cur ? "-16.5vmin" : "0" }}
 			onClick={() => {
 				if (!projectRef.current) return;
-				window.scrollTo({ top: projectRef.current.offsetTop + i * Math.min(window.innerHeight, window.innerWidth) });
+				window.scrollTo({ top: projectRef.current.offsetTop + i * Math.min(window.innerHeight, window.innerWidth) + 10});
 			}}>
 			<div className={"vinyl-cover rounded-sm p-[4vmin] pb-[6vmin] min-h-full min-w-full h-full w-full  flex  aspect-square shadow-xl back z-10 delay-200 duration-300  flex-col items-center " + (i == cur ? "-mr-[50%] group-hover:-mr-[0%] pointer-events-none group-hover:opacity-0" : " -mr-[100%] group-hover:-mr-[50%] ")} style={{ backgroundColor: x.bgcolor || "#081326", color: x.color || "var(--color-oxford-blue-900)", transitionProperty: "margin-right , opacity" }}>
 				<div className="min-w-full min-h-full aspect-square  flex items-center justify-center">
@@ -155,7 +166,7 @@ export default function Home() {
 		));
 		let counter = 0;
 		const interval = setInterval(() => {
-			if (counter++ % 30 == 0) {
+			if (counter++ % 100 == 0) {
 				setIndex(Math.floor(Math.random() * text.length));
 
 				setIndex2(Math.floor(Math.random() * text.length));
@@ -164,22 +175,6 @@ export default function Home() {
 
 			if (!ref.current) return;
 			coverHeight.set((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
-			if (projectRef.current) {
-				let top = projectRef.current.getBoundingClientRect().top;
-				let bottom = projectRef.current.getBoundingClientRect().bottom;
-				let index = -1;
-				if (top > 0) {
-					index = -1;
-				} else {
-					index = Math.floor(-top / (vmin * 100));
-					index = index > items.length ? items.length : index;
-				}
-				if (top > window.innerHeight - vmin * 40) index = -2;
-				if (bottom < vmin * 40) index = items.length + 1;
-				if (index != curIndex) {
-					setCur(index);
-				}
-			}
 			const element = ref.current!;
 			frame.read(() => {
 				if (focus.current) {
@@ -201,7 +196,24 @@ export default function Home() {
 		}, 30);
 		vmin = Math.min(window.innerHeight, window.innerWidth) * 0.01;
 		window.addEventListener("pointermove", handlePointerMove);
-
+		window.addEventListener("scroll", () => {
+			if (projectRef.current) {
+				let top = projectRef.current.getBoundingClientRect().top;
+				let bottom = projectRef.current.getBoundingClientRect().bottom;
+				let index = -1;
+				if (top > 0) {
+					index = -1;
+				} else {
+					index = Math.floor(-top / (vmin * 100));
+					index = index > items.length ? items.length : index;
+				}
+				if (top > window.innerHeight - vmin * 40) index = -2;
+				if (bottom < vmin * 40) index = items.length + 1;
+				if (index != curIndex) {
+					setCur(index);
+				}
+			}
+		});
 		window.addEventListener("resize", () => {
 			vmin = Math.min(window.innerHeight, window.innerWidth) * 0.01;
 		});
@@ -219,9 +231,9 @@ export default function Home() {
 				<div className="fixed z-0 w-full h-screen top-0 left-0 bg-rich-black-500/50 backdrop-blur-2xl"></div>
 
 				<main className="flex w-full duration-300 lg:w-[50vw] lg:-mt-20 z-10 flex-col gap-[10vh] row-start-2 items-center">
-					<div className="w-full min-h-screen flex flex-col gap-[10vh] items-center">
+					<div className="w-full min-h-[80vh] flex flex-col gap-[10vh] items-center">
 						<div className={"h-[6vh] min-w-fit text-[5vh] mt-[16vh] lg:mt-[20vh] text-ado-blue-800 flex w-full items-center  justify-center " + germ.className}>
-							Hi, I'm{" "}
+							{"Hi, I'm"}{" "}
 							<div className=" h-[6vh] flex  text-ado-blue-600 flex-col gap-[2vh] items-center justify-center p-2 ">
 								<label className={"h-[6vh] flex duration-300 items-center justify-center " + guj.className} style={{ marginTop: [16.5, 0, -15.5][index] + "vh", opacity: [1, 0, 0][index], scale: [1, 0.5, 0.5][index] }}>
 									જતન
@@ -257,8 +269,8 @@ export default function Home() {
 							</div>
 						</div>
 						<div className="eng text-ado-blue-800 text-[3vh] w-full">
-							Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
-							hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
+							{textx(`Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
+							hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.`,0.005)}
 						</div>
 					</div>
 					<div ref={scroller} className="w-full hidden flex hid den flex-wrap justify-center items-center gap-8 ">
@@ -275,7 +287,7 @@ export default function Home() {
 							style={{
 								color: items[cur] ? items[cur].color : "",
 							}}>
-							PROJECTS
+							{!(cur == -2 || cur == items.length + 1) && textx((items[cur] ? items[cur].name : "Projects"),0.05,items[cur] ?cur+"":"")}
 						</div>
 						<div
 							className="h-[41vmin] w-full  sticky duration-300 self-start top-[calc(50svh-20.5vmin)] translate-x-1/2  gap-[11vmin] overflow-x-visible flex items-center justify-start"
