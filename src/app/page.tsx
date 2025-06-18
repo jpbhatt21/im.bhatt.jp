@@ -76,6 +76,7 @@ let items: any = [
 	},
 ];
 let vmin = 0;
+let onscroll = null as any;
 let curIndex = -1;
 export default function Home() {
 	const pad = 50;
@@ -162,6 +163,23 @@ export default function Home() {
 			// (prevIndex) => (prevIndex + 1) % text.length);
 
 			if (!ref.current) return;
+			coverHeight.set((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
+			if (projectRef.current) {
+				let top = projectRef.current.getBoundingClientRect().top;
+				let bottom = projectRef.current.getBoundingClientRect().bottom;
+				let index = -1;
+				if (top > 0) {
+					index = -1;
+				} else {
+					index = Math.floor(-top / (vmin * 100));
+					index = index > items.length ? items.length : index;
+				}
+				if (top > window.innerHeight - vmin * 40) index = -2;
+				if (bottom < vmin * 40) index = items.length + 1;
+				if (index != curIndex) {
+					setCur(index);
+				}
+			}
 			const element = ref.current!;
 			frame.read(() => {
 				if (focus.current) {
@@ -180,31 +198,10 @@ export default function Home() {
 					r.set(500);
 				}
 			});
-		}, 100);
+		}, 30);
 		vmin = Math.min(window.innerHeight, window.innerWidth) * 0.01;
 		window.addEventListener("pointermove", handlePointerMove);
-		window.addEventListener("scroll", (e) => {
-			if (!scroller.current) return;
-			coverHeight.set((window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100);
-			if (projectRef.current) {
-				let top = projectRef.current.getBoundingClientRect().top;
-				let bottom = projectRef.current.getBoundingClientRect().bottom;
-				let index = -1;
-				if (top > 0){ index = -1;
-				}
-				else {
-					index = Math.floor(-top / (vmin * 100));
-					index = index >items.length ? items.length : index;
-				}
-				if(top > window.innerHeight - vmin*40)
-				index = -2;
-				if(bottom<vmin*40)
-				index = items.length + 1;
-				if (index != curIndex) {
-					setCur(index);
-				}
-			}
-		});
+
 		window.addEventListener("resize", () => {
 			vmin = Math.min(window.innerHeight, window.innerWidth) * 0.01;
 		});
@@ -220,68 +217,70 @@ export default function Home() {
 				<motion.div className="w-82 h-82 rounded-md z- 10 bg-ado-blue-800 fixed" ref={ref} style={{ x, y, width: w, height: h, borderRadius: r, backgroundColor: items[cur] ? "#" + items[cur].style.base.toString(16) : "" }}></motion.div>
 
 				<div className="fixed z-0 w-full h-screen top-0 left-0 bg-rich-black-500/50 backdrop-blur-2xl"></div>
-				
+
 				<main className="flex w-full duration-300 lg:w-[50vw] lg:-mt-20 z-10 flex-col gap-[10vh] row-start-2 items-center">
 					<div className="w-full min-h-screen flex flex-col gap-[10vh] items-center">
 						<div className={"h-[6vh] min-w-fit text-[5vh] mt-[16vh] lg:mt-[20vh] text-ado-blue-800 flex w-full items-center  justify-center " + germ.className}>
-						Hi, I'm{" "}
-						<div className=" h-[6vh] flex  text-ado-blue-600 flex-col gap-[2vh] items-center justify-center p-2 ">
-							<label className={"h-[6vh] flex duration-300 items-center justify-center " + guj.className} style={{ marginTop: [16.5, 0, -15.5][index] + "vh", opacity: [1, 0, 0][index], scale: [1, 0.5, 0.5][index] }}>
-								જતન
-							</label>
-							<label className=" h-[6vh] flex items-center justify-center duration-300" style={{ opacity: [0, 1, 0][index], scale: [0.5, 1, 0.5][index] }}>
-								Jatan
-							</label>
-							<label className={"h-[6vh] flex items-center justify-center duration-300 " + hindi.className} style={{ opacity: [0, 0, 1][index], scale: [0.5, 0.5, 1][index] }}>
-								जतन
-							</label>
+							Hi, I'm{" "}
+							<div className=" h-[6vh] flex  text-ado-blue-600 flex-col gap-[2vh] items-center justify-center p-2 ">
+								<label className={"h-[6vh] flex duration-300 items-center justify-center " + guj.className} style={{ marginTop: [16.5, 0, -15.5][index] + "vh", opacity: [1, 0, 0][index], scale: [1, 0.5, 0.5][index] }}>
+									જતન
+								</label>
+								<label className=" h-[6vh] flex items-center justify-center duration-300" style={{ opacity: [0, 1, 0][index], scale: [0.5, 1, 0.5][index] }}>
+									Jatan
+								</label>
+								<label className={"h-[6vh] flex items-center justify-center duration-300 " + hindi.className} style={{ opacity: [0, 0, 1][index], scale: [0.5, 0.5, 1][index] }}>
+									जतन
+								</label>
+							</div>
+							<div className=" h-[6vh] flex  text-ado-blue-600 flex-col gap-[2vh] justify-center py-2 ">
+								<label className={"h-[6vh] flex duration-300 items-center  " + guj.className} style={{ marginTop: [16.5, 0, -15.5][index2] + "vh", opacity: [1, 0, 0][index2], scale: [1, 0.5, 0.5][index2] }}>
+									ભટ્ટ
+								</label>
+								<label className="h-[6vh] flex items-center duration-300" style={{ opacity: [0, 1, 0][index2], scale: [0.5, 1, 0.5][index2] }}>
+									Bhatt
+								</label>
+								<label className={"h-[6vh] flex items-center duration-300 " + hindi.className} style={{ opacity: [0, 0, 1][index2], scale: [0.5, 0.5, 1][index2] }}>
+									भट्ट
+								</label>
+							</div>
+							<div className=" h-10 flex hidden  text-oxford-blue-900 flex-col gap-8 items-center justify-center p-2 ">
+								<label className="guj h-10 flex duration-300 items-center justify-center" style={{ marginTop: [8.75, 0, -8.75][index] + "rem", opacity: [1, 0, 0][index], scale: [1, 0.5, 0.5][index] }}>
+									ભટ્ટ.જપ
+								</label>
+								<label className="eng h-10 flex items-center justify-center duration-300" style={{ opacity: [0, 1, 0][index], scale: [0.5, 1, 0.5][index] }}>
+									bhatt.jp
+								</label>
+								<label className="hindi h-10 flex items-center justify-center duration-300" style={{ opacity: [0, 0, 1][index], scale: [0.5, 0.5, 1][index] }}>
+									भट्ट.जप
+								</label>
+							</div>
 						</div>
-						<div className=" h-[6vh] flex  text-ado-blue-600 flex-col gap-[2vh] justify-center py-2 ">
-							<label className={"h-[6vh] flex duration-300 items-center  " + guj.className} style={{ marginTop: [16.5, 0, -15.5][index2] + "vh", opacity: [1, 0, 0][index2], scale: [1, 0.5, 0.5][index2] }}>
-								ભટ્ટ
-							</label>
-							<label className="h-[6vh] flex items-center duration-300" style={{ opacity: [0, 1, 0][index2], scale: [0.5, 1, 0.5][index2] }}>
-								Bhatt
-							</label>
-							<label className={"h-[6vh] flex items-center duration-300 " + hindi.className} style={{ opacity: [0, 0, 1][index2], scale: [0.5, 0.5, 1][index2] }}>
-								भट्ट
-							</label>
+						<div className="eng text-ado-blue-800 text-[3vh] w-full">
+							Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut
+							hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
 						</div>
-						<div className=" h-10 flex hidden  text-oxford-blue-900 flex-col gap-8 items-center justify-center p-2 ">
-							<label className="guj h-10 flex duration-300 items-center justify-center" style={{ marginTop: [8.75, 0, -8.75][index] + "rem", opacity: [1, 0, 0][index], scale: [1, 0.5, 0.5][index] }}>
-								ભટ્ટ.જપ
-							</label>
-							<label className="eng h-10 flex items-center justify-center duration-300" style={{ opacity: [0, 1, 0][index], scale: [0.5, 1, 0.5][index] }}>
-								bhatt.jp
-							</label>
-							<label className="hindi h-10 flex items-center justify-center duration-300" style={{ opacity: [0, 0, 1][index], scale: [0.5, 0.5, 1][index] }}>
-								भट्ट.जप
-							</label>
-						</div>
-					</div>
-					<div className="eng text-ado-blue-800 text-[3vh] w-full">
-						Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit
-						semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.
-					</div>
 					</div>
 					<div ref={scroller} className="w-full hidden flex hid den flex-wrap justify-center items-center gap-8 ">
 						{arr}
 					</div>
-					<div ref={projectRef} className="h-[500vh] w-full  px-0 transition-opacity duration-300 items-center flex flex-col"
-					style={{
-						opacity:cur==-2 || cur == items.length+1? 0 : 1,
-					}}
-					>
-						<div className="eng text-ado-blue-800 duration-300 sticky text-[5vh] top-[15lvh]"
+					<div
+						ref={projectRef}
+						className="h-[500vh] w-full  px-0 transition-opacity duration-300 items-center flex flex-col"
 						style={{
-							color:items[cur] ? items[cur].color: "" 
-						}}
-						>PROJECTS</div>
+							opacity: cur == -2 || cur == items.length + 1 ? 0 : 1,
+						}}>
+						<div
+							className="eng text-ado-blue-800 duration-300 sticky text-[5vh] top-[15lvh]"
+							style={{
+								color: items[cur] ? items[cur].color : "",
+							}}>
+							PROJECTS
+						</div>
 						<div
 							className="h-[41vmin] w-full  sticky duration-300 self-start top-[calc(50svh-20.5vmin)] translate-x-1/2  gap-[11vmin] overflow-x-visible flex items-center justify-start"
 							style={{
 								marginLeft: "calc(-24.375vmin - " + (cur < 0 ? -9 : cur >= items.length ? items.length * 44 - 53 : cur * 44) + "vmin)",
-								
 							}}>
 							{vinyls}
 						</div>
@@ -292,10 +291,11 @@ export default function Home() {
 
 				<div className="h-screen w-full pointer-events-none rotate-180 -mt-16 lg:mt-0 lg:rotate-0 rotate-y-180 lg:rotate-y-0 lg:top-0 left-0 fixed flex flex-col lg:flex-row lg:justify-end z-10">
 					<motion.div className="cover -rotate-90 lg:rotate-0 origin-top-left overflow-hidden h-[100vw] lg:h-screen w-8" style={{ mask: mask }}>
-						<div className="w-full h-full duration-300 vines tint"
-						style={{
-							backgroundColor: items[cur] ? items[cur].color : "",
-						}}
+						<div
+							className="w-full h-full duration-300 vines tint"
+							style={{
+								backgroundColor: items[cur] ? items[cur].color : "",
+							}}
 						/>
 					</motion.div>
 				</div>
