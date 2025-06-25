@@ -9,7 +9,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 REPO_URL="https://github.com/jpbhatt21/bisct.git"  # Replace with your repository URL
-CLONE_DIR="./bisct"  # Directory to clone the repository
+CLONE_DIR="./bisct" # Directory to clone the repository
 
 # Function to print colored output
 print_status() {
