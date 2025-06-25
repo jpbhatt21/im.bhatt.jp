@@ -437,7 +437,7 @@ run_application() {
 
     # Start the application
     print_success "Starting the application with system environment variables..."
-    npm start
+    # npm start
 }
 
 
