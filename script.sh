@@ -9,7 +9,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 REPO_URL="https://github.com/jpbhatt21/bisct.git"  # Replace with your repository URL
-CLONE_DIR="./bisct"  # Directory to clone the repository
+CLONE_DIR="~/bisct"  # Directory to clone the repository
 
 # Function to print colored output
 print_status() {
@@ -418,6 +418,7 @@ run_application() {
     print_status "Running npm install, build, and start sequence..."
     cd "$CLONE_DIR/bisct-server"
     # Install dependencies
+    pwd
     print_status "Installing npm dependencies..."
     npm i
     if [ $? -ne 0 ]; then
@@ -425,6 +426,7 @@ run_application() {
         exit 1
     fi
     print_success "Dependencies installed successfully"
+    pwd
     cd "$CLONE_DIR/bisct-server"
     # Build the project
     print_status "Building the project..."
@@ -437,7 +439,7 @@ run_application() {
 
     # Start the application
     print_success "Starting the application with system environment variables..."
-    # npm start
+    npm start
 }
 
 
