@@ -416,18 +416,14 @@ run_application() {
 
     # Run the complete build and start sequence
     print_status "Running npm install, build, and start sequence..."
-    cd "$CLONE_DIR/bisct-server"
     # Install dependencies
-    pwd
     print_status "Installing npm dependencies..."
-    npm i
+    npm ci
     if [ $? -ne 0 ]; then
         print_error "Failed to install npm dependencies"
         exit 1
     fi
     print_success "Dependencies installed successfully"
-    pwd
-    cd "$CLONE_DIR/bisct-server"
     # Build the project
     print_status "Building the project..."
     npm run build
