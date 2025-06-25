@@ -344,9 +344,9 @@ start_docker_daemon() {
     fi
 }
 
-# Function to run the application as a systemd service
+# Function to run the application (with system environment variables)
 run_application() {
-    print_status "Setting up application as a systemd service..."
+    print_status "Starting the application..."
 
     # Check if the bisct-server directory exists
     if [ ! -d "$CLONE_DIR/bisct-server" ]; then
@@ -360,24 +360,19 @@ run_application() {
     print_status "Changing to $CLONE_DIR/bisct-server..."
     cd "$CLONE_DIR/bisct-server"
 
-    # Get the absolute path for the service
-    APP_DIR=$(pwd)
-    SERVICE_NAME="bisct-server"
-    SERVICE_FILE="/etc/systemd/system/${SERVICE_NAME}.service"
-
     # Check and set NODE_ENV if not already declared
     if [ -z "$NODE_ENV" ]; then
-        print_status "NODE_ENV not set, will use NODE_ENV=production for service..."
-        NODE_ENV=production
-        print_success "Will use NODE_ENV=production"
+        print_status "NODE_ENV not set, exporting NODE_ENV=production..."
+        export NODE_ENV=production
+        print_success "Exported NODE_ENV=production"
     else
         print_warning "NODE_ENV already set to: $NODE_ENV"
     fi
 
     # Check and set JWT_SECRET if not already declared
     if [ -z "$JWT_SECRET" ]; then
-        print_status "JWT_SECRET not set, generating random JWT secret for service..."
-
+        print_status "JWT_SECRET not set, generating and exporting random JWT secret..."
+        
         # Generate a random JWT secret token
         JWT_SECRET=$(openssl rand -hex 32)
         if [ $? -ne 0 ]; then
@@ -385,18 +380,43 @@ run_application() {
             print_warning "OpenSSL not available, using fallback method..."
             JWT_SECRET=$(cat /dev/urandom | tr -dc 'a-f0-9' | fold -w 64 | head -n 1)
         fi
-
-        print_success "Generated JWT_SECRET: ${JWT_SECRET:0:8}... (truncated for security)"
+        
+        # Export for current session
+        export JWT_SECRET="$JWT_SECRET"
+        print_success "Generated and exported JWT_SECRET: ${JWT_SECRET:0:8}... (truncated for security)"
+        
+        # Check if JWT_SECRET is already in .bashrc
+        if grep -q "export JWT_SECRET=" "$HOME/.bashrc"; then
+            print_warning "JWT_SECRET already exists in ~/.bashrc, skipping addition"
+        else
+            print_status "Adding JWT_SECRET to ~/.bashrc for persistence..."
+            echo "" >> "$HOME/.bashrc"
+            echo "# JWT Secret for BISCT application (auto-generated)" >> "$HOME/.bashrc"
+            echo "export JWT_SECRET=\"$JWT_SECRET\"" >> "$HOME/.bashrc"
+            print_success "JWT_SECRET added to ~/.bashrc"
+            print_warning "Note: JWT_SECRET will be available in new shell sessions. Run 'source ~/.bashrc' to use in current session."
+        fi
+        
     else
         print_warning "JWT_SECRET already set in system environment"
     fi
 
-    # Display environment variables for verification
-    print_status "Service will use environment variables:"
+    # Display current environment variables for verification
+    print_status "Current environment variables:"
     echo "NODE_ENV: $NODE_ENV"
     echo "JWT_SECRET: ${JWT_SECRET:0:8}... (truncated for security)"
 
-    # Install dependencies and build
+    # Remove any existing .env file if present (since we're using system env vars)
+    if [ -f ".env" ]; then
+        print_warning "Removing existing .env file since we're using system environment variables..."
+        rm .env
+        print_success ".env file removed"
+    fi
+
+    # Run the complete build and start sequence
+    print_status "Running npm install, build, and start sequence..."
+
+    # Install dependencies
     print_status "Installing npm dependencies..."
     npm i
     if [ $? -ne 0 ]; then
@@ -414,120 +434,11 @@ run_application() {
     fi
     print_success "Project built successfully"
 
-    # Stop existing service if running
-    if systemctl is-active --quiet "$SERVICE_NAME"; then
-        print_warning "Stopping existing $SERVICE_NAME service..."
-        sudo systemctl stop "$SERVICE_NAME"
-    fi
-
-    # Create systemd service file
-    print_status "Creating systemd service file at $SERVICE_FILE..."
-    sudo tee "$SERVICE_FILE" > /dev/null << EOF
-[Unit]
-Description=BISCT Server Application
-Documentation=https://github.com/jpbhatt21/bisct
-After=network.target
-Wants=network.target
-
-[Service]
-Type=simple
-User=$USER
-Group=$USER
-WorkingDirectory=$APP_DIR
-Environment=NODE_ENV=$NODE_ENV
-Environment=JWT_SECRET=$JWT_SECRET
-ExecStart=/usr/bin/npm start
-Restart=always
-RestartSec=10
-StandardOutput=journal
-StandardError=journal
-SyslogIdentifier=$SERVICE_NAME
-
-# Security settings
-NoNewPrivileges=yes
-PrivateTmp=yes
-ProtectSystem=strict
-ProtectHome=yes
-ReadWritePaths=$APP_DIR
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-    if [ $? -eq 0 ]; then
-        print_success "Service file created successfully"
-    else
-        print_error "Failed to create service file"
-        exit 1
-    fi
-
-    # Reload systemd daemon
-    print_status "Reloading systemd daemon..."
-    sudo systemctl daemon-reload
-
-    # Enable the service to start on boot
-    print_status "Enabling $SERVICE_NAME service..."
-    sudo systemctl enable "$SERVICE_NAME"
-    if [ $? -eq 0 ]; then
-        print_success "Service enabled successfully"
-    else
-        print_error "Failed to enable service"
-        exit 1
-    fi
-
-    # Start the service
-    print_status "Starting $SERVICE_NAME service..."
-    sudo systemctl start "$SERVICE_NAME"
-    if [ $? -eq 0 ]; then
-        print_success "Service started successfully"
-    else
-        print_error "Failed to start service"
-        # Show service status for debugging
-        print_status "Service status:"
-        sudo systemctl status "$SERVICE_NAME" --no-pager
-        exit 1
-    fi
-
-    # Wait a moment for the service to initialize
-    sleep 3
-
-    # Check service status
-    print_status "Checking service status..."
-    if systemctl is-active --quiet "$SERVICE_NAME"; then
-        print_success "$SERVICE_NAME service is running"
-
-        # Display service status
-        print_status "Service status:"
-        sudo systemctl status "$SERVICE_NAME" --no-pager -l
-
-        # Display recent logs
-        print_status "Recent service logs:"
-        sudo journalctl -u "$SERVICE_NAME" --no-pager -l -n 10
-
-        # Display service management commands
-        print_status "Service management commands:"
-        echo "  Start:   sudo systemctl start $SERVICE_NAME"
-        echo "  Stop:    sudo systemctl stop $SERVICE_NAME"
-        echo "  Restart: sudo systemctl restart $SERVICE_NAME"
-        echo "  Status:  sudo systemctl status $SERVICE_NAME"
-        echo "  Logs:    sudo journalctl -u $SERVICE_NAME -f"
-        echo "  Disable: sudo systemctl disable $SERVICE_NAME"
-
-    else
-        print_error "$SERVICE_NAME service failed to start"
-
-        # Show detailed status and logs for debugging
-        print_status "Detailed service status:"
-        sudo systemctl status "$SERVICE_NAME" --no-pager -l
-
-        print_status "Service logs:"
-        sudo journalctl -u "$SERVICE_NAME" --no-pager -l -n 20
-
-        exit 1
-    fi
-
-    print_success "Application successfully set up and running as a systemd service!"
+    # Start the application
+    print_success "Starting the application with system environment variables..."
+    npm start
 }
+
 
 
 # Main execution
