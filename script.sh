@@ -394,7 +394,8 @@ run_application() {
             echo "# JWT Secret for BISCT application (auto-generated)" >> "$HOME/.bashrc"
             echo "export JWT_SECRET=\"$JWT_SECRET\"" >> "$HOME/.bashrc"
             print_success "JWT_SECRET added to ~/.bashrc"
-            print_warning "Note: JWT_SECRET will be available in new shell sessions. Run 'source ~/.bashrc' to use in current session."
+            # print_warning "Note: JWT_SECRET will be available in new shell sessions. Run 'source ~/.bashrc' to use in current session."
+            source ~/.bashrc
         fi
         
     else
