@@ -33,6 +33,49 @@ command_exists() {
     command -v "$1" >/dev/null 2>&1
 }
 
+# Function to install build tools (make and build-essential)
+install_build_tools() {
+    print_status "Installing build tools (make and build-essential)..."
+
+    # Check if make is already installed
+    local make_installed=false
+    local build_essential_needed=false
+
+    if command_exists make; then
+        print_warning "make is already installed. Version: $(make --version | head -n1)"
+        make_installed=true
+    else
+        build_essential_needed=true
+    fi
+
+    # Check if gcc is available (indicator of build-essential)
+    if command_exists gcc; then
+        print_warning "build-essential appears to be installed. GCC version: $(gcc --version | head -n1)"
+    else
+        build_essential_needed=true
+    fi
+
+    # Install if needed
+    if [ "$build_essential_needed" = true ]; then
+        print_status "Installing make and build-essential..."
+
+        # Update package index
+        sudo apt update
+
+        # Install both packages
+        sudo apt install -y make build-essential
+
+        if [ $? -eq 0 ]; then
+            print_success "Build tools installed successfully"
+        else
+            print_error "Failed to install build tools"
+            exit 1
+        fi
+    else
+        print_success "All build tools are already installed"
+    fi
+}
+
 # Function to install Node.js
 install_node() {
     print_status "Installing Node.js..."
@@ -187,6 +230,24 @@ clone_repository() {
 verify_installations() {
     print_status "Verifying installations..."
 
+    # Verify make
+    if command_exists make; then
+        MAKE_VERSION=$(make --version | head -n1)
+        print_success "make: $MAKE_VERSION"
+    else
+        print_error "make verification failed"
+        return 1
+    fi
+
+    # Verify gcc (build-essential)
+    if command_exists gcc; then
+        GCC_VERSION=$(gcc --version | head -n1)
+        print_success "gcc: $GCC_VERSION"
+    else
+        print_error "gcc verification failed"
+        return 1
+    fi
+
     # Verify Node.js
     if command_exists node; then
         NODE_VERSION=$(node --version)
@@ -283,9 +344,9 @@ start_docker_daemon() {
     fi
 }
 
-# Function to run the application (Alternative method with .env file)
+# Function to run the application as a systemd service
 run_application() {
-    print_status "Starting the application..."
+    print_status "Setting up application as a systemd service..."
 
     # Check if the bisct-server directory exists
     if [ ! -d "$CLONE_DIR/bisct-server" ]; then
@@ -299,13 +360,25 @@ run_application() {
     print_status "Changing to $CLONE_DIR/bisct-server..."
     cd "$CLONE_DIR/bisct-server"
 
-    # Check if .env file already exists
-    if [ -f ".env" ]; then
-        print_warning ".env file already exists, skipping creation"
-        print_status "Using existing .env file"
+    # Get the absolute path for the service
+    APP_DIR=$(pwd)
+    SERVICE_NAME="bisct-server"
+    SERVICE_FILE="/etc/systemd/system/${SERVICE_NAME}.service"
+
+    # Check and set NODE_ENV if not already declared
+    if [ -z "$NODE_ENV" ]; then
+        print_status "NODE_ENV not set, will use NODE_ENV=production for service..."
+        NODE_ENV=production
+        print_success "Will use NODE_ENV=production"
     else
+        print_warning "NODE_ENV already set to: $NODE_ENV"
+    fi
+
+    # Check and set JWT_SECRET if not already declared
+    if [ -z "$JWT_SECRET" ]; then
+        print_status "JWT_SECRET not set, generating random JWT secret for service..."
+
         # Generate a random JWT secret token
-        print_status "Generating random JWT secret token..."
         JWT_SECRET=$(openssl rand -hex 32)
         if [ $? -ne 0 ]; then
             # Fallback method using /dev/urandom if openssl fails
@@ -313,22 +386,17 @@ run_application() {
             JWT_SECRET=$(cat /dev/urandom | tr -dc 'a-f0-9' | fold -w 64 | head -n 1)
         fi
 
-        print_success "Generated JWT secret: ${JWT_SECRET:0:8}... (truncated for security)"
-
-        # Create .env file for production with generated JWT secret
-        print_status "Creating production .env file with generated JWT secret..."
-        cat > .env << EOF
-NODE_ENV=production
-JWT_SECRET=$JWT_SECRET
-EOF
-
-        print_success "Production .env file created with random JWT secret"
+        print_success "Generated JWT_SECRET: ${JWT_SECRET:0:8}... (truncated for security)"
+    else
+        print_warning "JWT_SECRET already set in system environment"
     fi
 
-    # Run the complete build and start sequence
-    print_status "Running npm install, build, and start sequence..."
+    # Display environment variables for verification
+    print_status "Service will use environment variables:"
+    echo "NODE_ENV: $NODE_ENV"
+    echo "JWT_SECRET: ${JWT_SECRET:0:8}... (truncated for security)"
 
-    # Install dependencies
+    # Install dependencies and build
     print_status "Installing npm dependencies..."
     npm i
     if [ $? -ne 0 ]; then
@@ -346,9 +414,119 @@ EOF
     fi
     print_success "Project built successfully"
 
-    # Start the application
-    print_success "Starting the application..."
-    npm start
+    # Stop existing service if running
+    if systemctl is-active --quiet "$SERVICE_NAME"; then
+        print_warning "Stopping existing $SERVICE_NAME service..."
+        sudo systemctl stop "$SERVICE_NAME"
+    fi
+
+    # Create systemd service file
+    print_status "Creating systemd service file at $SERVICE_FILE..."
+    sudo tee "$SERVICE_FILE" > /dev/null << EOF
+[Unit]
+Description=BISCT Server Application
+Documentation=https://github.com/jpbhatt21/bisct
+After=network.target
+Wants=network.target
+
+[Service]
+Type=simple
+User=$USER
+Group=$USER
+WorkingDirectory=$APP_DIR
+Environment=NODE_ENV=$NODE_ENV
+Environment=JWT_SECRET=$JWT_SECRET
+ExecStart=/usr/bin/npm start
+Restart=always
+RestartSec=10
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=$SERVICE_NAME
+
+# Security settings
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=$APP_DIR
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    if [ $? -eq 0 ]; then
+        print_success "Service file created successfully"
+    else
+        print_error "Failed to create service file"
+        exit 1
+    fi
+
+    # Reload systemd daemon
+    print_status "Reloading systemd daemon..."
+    sudo systemctl daemon-reload
+
+    # Enable the service to start on boot
+    print_status "Enabling $SERVICE_NAME service..."
+    sudo systemctl enable "$SERVICE_NAME"
+    if [ $? -eq 0 ]; then
+        print_success "Service enabled successfully"
+    else
+        print_error "Failed to enable service"
+        exit 1
+    fi
+
+    # Start the service
+    print_status "Starting $SERVICE_NAME service..."
+    sudo systemctl start "$SERVICE_NAME"
+    if [ $? -eq 0 ]; then
+        print_success "Service started successfully"
+    else
+        print_error "Failed to start service"
+        # Show service status for debugging
+        print_status "Service status:"
+        sudo systemctl status "$SERVICE_NAME" --no-pager
+        exit 1
+    fi
+
+    # Wait a moment for the service to initialize
+    sleep 3
+
+    # Check service status
+    print_status "Checking service status..."
+    if systemctl is-active --quiet "$SERVICE_NAME"; then
+        print_success "$SERVICE_NAME service is running"
+
+        # Display service status
+        print_status "Service status:"
+        sudo systemctl status "$SERVICE_NAME" --no-pager -l
+
+        # Display recent logs
+        print_status "Recent service logs:"
+        sudo journalctl -u "$SERVICE_NAME" --no-pager -l -n 10
+
+        # Display service management commands
+        print_status "Service management commands:"
+        echo "  Start:   sudo systemctl start $SERVICE_NAME"
+        echo "  Stop:    sudo systemctl stop $SERVICE_NAME"
+        echo "  Restart: sudo systemctl restart $SERVICE_NAME"
+        echo "  Status:  sudo systemctl status $SERVICE_NAME"
+        echo "  Logs:    sudo journalctl -u $SERVICE_NAME -f"
+        echo "  Disable: sudo systemctl disable $SERVICE_NAME"
+
+    else
+        print_error "$SERVICE_NAME service failed to start"
+
+        # Show detailed status and logs for debugging
+        print_status "Detailed service status:"
+        sudo systemctl status "$SERVICE_NAME" --no-pager -l
+
+        print_status "Service logs:"
+        sudo journalctl -u "$SERVICE_NAME" --no-pager -l -n 20
+
+        exit 1
+    fi
+
+    print_success "Application successfully set up and running as a systemd service!"
 }
 
 
@@ -360,7 +538,8 @@ main() {
     print_status "Updating system packages..."
     sudo apt update
 
-    # Install components
+    # Install components (build tools first since they're fundamental)
+    install_build_tools
     install_git
     install_node
     install_docker
@@ -373,6 +552,8 @@ main() {
 
         # Start Docker daemon
         start_docker_daemon
+        sudo usermod -aG docker $USER
+        newgrp docker
 
         # Run the application
         run_application
